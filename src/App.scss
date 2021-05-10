@@ -2,3 +2,20 @@
   text-align: center;
 }
 
+.todo{
+  &__text{
+      &--completed{
+          text-decoration: line-through;
+      }
+  }
+
+  &--disabled{
+    display: none;
+  }
+
+  &--completed{
+    p{
+      text-decoration: line-through;
+    }
+  }
+}
