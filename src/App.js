@@ -77,9 +77,12 @@ class App extends Component {
           ${(this.state.currentMenu === 'active' && item.completed ) || (this.state.currentMenu === 'completed' && !item.completed) ? 'disabled' : ''}`}
           key={index}
         >
-          <input type="checkbox" checked={item.completed} onChange={() => this.handleCheckbox(index)}></input>
+          <div className="checkbox-container" onClick={() => this.handleCheckbox(index)}>
+            <input className="todo__check" type="checkbox" checked={item.completed} onChange={() => this.handleCheckbox(index)}></input>
+            <span className="checkbox-checkmark"></span>
+          </div>
           <p>{item.todo}</p>
-          <button onClick={() => this.deleteOne(index)}>delete me</button>
+          <div className="material-icons todo__delete" onClick={() => this.deleteOne(index)}>clear</div>
         </li>
       )
     })
@@ -106,7 +109,7 @@ class App extends Component {
           {todoList}
           
           <div className={`todo-list__delete-all ${this.state.currentMenu === 'completed' ? '' : 'disabled'}`}>
-            <button onClick={this.deleteAll}>Delete all</button>
+            <button onClick={this.deleteAll}><p className="todo-list__delete-all-text"><span className="material-icons-outlined">delete</span>Delete all</p></button>
           </div>
         </div>
         
