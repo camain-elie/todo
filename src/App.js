@@ -11,8 +11,9 @@ class App extends Component {
     this.deleteAll = this.deleteAll.bind(this)
     this.deleteOne = this.deleteOne.bind(this)
 
-    this.state={
-      todoList: [
+    let list = this.retrieveFromLocalStorage()
+    if(!list){
+      list = [
         {
           todo: "Do coding challenges",
           completed: false
@@ -25,24 +26,34 @@ class App extends Component {
           todo: "Task completed",
           completed: true
         },
-      ],
+      ]
+    }
+
+    this.state={
+      todoList: list,
       inputText: '',
       currentMenu: 'all',
     }
   }
 
+  saveToLocalStorage(){
+    localStorage.setItem("todoList", JSON.stringify(this.state.todoList))
+  }
+
+  retrieveFromLocalStorage(){
+    return JSON.parse(localStorage.getItem("todoList"))
+  }
+
   addTodo(){
-    //console.log( this.state.inputText.split(' '))
     if(this.state.inputText){
       this.setState({
         todoList: [...this.state.todoList,{todo: this.state.inputText, completed: false}],
         inputText: '',
-      })
+      }, () => {this.saveToLocalStorage()})
     }
   }
 
   handleCheckbox(index){
-
     const list = this.state.todoList.map((item, i) => {
       if (index === i) {
         return {todo: item.todo, completed: !item.completed}
@@ -50,18 +61,17 @@ class App extends Component {
         return item
       }
     })
-
-    this.setState({ todoList: list })
+    this.setState({ todoList: list }, () => this.saveToLocalStorage())
   }
 
   deleteOne(index){
     const list = this.state.todoList.filter((item, i) => index !== i)
-    this.setState({ todoList: list })
+    this.setState({ todoList: list }, () => this.saveToLocalStorage())
   }
 
   deleteAll(){
     const list = this.state.todoList.filter((item) => !item.completed)
-    this.setState({ todoList: list})
+    this.setState({ todoList: list}, () => this.saveToLocalStorage())
   }
 
   handleMenuClick(e){
@@ -78,7 +88,7 @@ class App extends Component {
           key={index}
         >
           <div className="checkbox-container" onClick={() => this.handleCheckbox(index)}>
-            <input className="todo__check" type="checkbox" checked={item.completed} onChange={() => this.handleCheckbox(index)}></input>
+            <input type="checkbox" checked={item.completed} onChange={() => this.handleCheckbox(index)}></input>
             <span className="checkbox-checkmark"></span>
           </div>
           <p>{item.todo}</p>
@@ -89,7 +99,9 @@ class App extends Component {
     
     return(
       <div className="app">
+
         <h1>#todo</h1>
+
         <div className="menu">
           <ul>
             <li className={this.state.currentMenu === 'all' ? 'menu-active' : ''} data-name="all" onClick={this.handleMenuClick}>All</li>
@@ -103,11 +115,8 @@ class App extends Component {
           <button className="todo__add-button" onClick={this.addTodo}>Add</button>
         </div>
         
-        
         <div className="todo-list">
-
           {todoList}
-          
           <div className={`todo-list__delete-all ${this.state.currentMenu === 'completed' ? '' : 'disabled'}`}>
             <button onClick={this.deleteAll}><p className="todo-list__delete-all-text"><span className="material-icons-outlined">delete</span>Delete all</p></button>
           </div>
