@@ -1,5 +1,6 @@
 import { Component } from 'react'
-import './App.scss';
+import './App.scss'
+import Footer from './Footer'
 
 class App extends Component {
   constructor(props){
@@ -122,6 +123,7 @@ class App extends Component {
           </div>
         </div>
         
+        <Footer/>
       </div>
     )
   }
